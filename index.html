@@ -10,9 +10,14 @@
         <input type="text" v-model = "inputValue"/> <!--將input的數值綁定到Vue實例的變數中，此為雙向綁定input或vue實力的變數更改，兩者都會統一改變-->
         <button v-on:click = 'handleBtnClick'>提交</button> <!--將button的click事件綁到Vue的handBtnClick函數-->
         <ul>
-            <li v-for = "itme in list">{{itme}}</li> <!--將實例內的list變數以item名稱foreach-->
-        </ul>
-    </div>
+            <!--<li v-for = "item in list">{{item}}</li>--> <!--將實例內的list變數以item名稱foreach-->
+            <todo-item v-bind:content = "item" 
+                       v-bind:index = "index" 
+                       v-for = "(item, index) in list" 
+                       v-on:delete = "handleItemDelete"
+                       ></todo-item> <!--使用時必須小寫且用 - 連結-->
+        </ul>                        <!--使用v-bind:將參數丟給子組件使用-->
+    </div>                           <!--使用v-for可以多一個index變數來取得當前的index，再將他丟給 v-bind:index = "index" -->
 
     <script>
         // //傳統JS寫法
@@ -20,8 +25,27 @@
         // dom.innerHTML = 'hello world';
 
         //vue寫法
+
+        //vue全局組件創建方法
+        // Vue.component("TodoItem", {     //命名時單字以大駝峰表示，使用時必須小寫且用 - 連結
+        //     props : ['content'], //接收外部由bind傳入的值
+        //     template : "<li>{{content}}</li>"
+        // })
+
+         //vue局部組件創建方法
+        var TodoItem = {
+            props : ['content','index'], //接收外部由bind傳入的值
+            template : "<li v-on:click = hendleItemClick>{{content}}</li>",
+            methods: {
+                hendleItemClick : function() {
+                   this.$emit("delete",this.index);//回傳給父組件一個delete事件,且回傳一個值
+                }
+            }
+        }
+        
         var app =new Vue({
             el : '#app', //實例創建後負責的區域，可用於tag、class、id等js的Element，區域內部的所有DOM都能使用
+            components : {TodoItem:TodoItem}, //局部組件必須寫進實例才可使用
             data : {     //此實例包含的變數，被掛載的區域都能使用
                 list : [],
                 inputValue : ''
@@ -32,13 +56,12 @@
                         this.list.push(this.inputValue);
                         this.inputValue = '';
                     }
-                  
+                },
+                handleItemDelete : function(index) {
+                   this.list.splice(index, 1);
                 }
             }
         })
-
-    
-
     </script>
 </body>
 </html>
