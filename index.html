@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello world</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model = "inputValue"/> <!--將input的數值綁定到Vue實例的變數中，此為雙向綁定input或vue實力的變數更改，兩者都會統一改變-->
+        <button v-on:click = 'handleBtnClick'>提交</button> <!--將button的click事件綁到Vue的handBtnClick函數-->
+        <ul>
+            <li v-for = "itme in list">{{itme}}</li> <!--將實例內的list變數以item名稱foreach-->
+        </ul>
+    </div>
+
+    <script>
+        // //傳統JS寫法
+        // var dom = document.getElementById('app');
+        // dom.innerHTML = 'hello world';
+
+        //vue寫法
+        var app =new Vue({
+            el : '#app', //實例創建後負責的區域，可用於tag、class、id等js的Element，區域內部的所有DOM都能使用
+            data : {     //此實例包含的變數，被掛載的區域都能使用
+                list : [],
+                inputValue : ''
+            },
+            methods: {
+                handleBtnClick : function() {
+                    if(this.inputValue != ''){ //在實例內可用this取得實例的變數
+                        this.list.push(this.inputValue);
+                        this.inputValue = '';
+                    }
+                  
+                }
+            }
+        })
+
+    
+
+    </script>
+</body>
+</html>
